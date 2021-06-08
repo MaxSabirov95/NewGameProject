@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class ButtonUpgrade : MonoBehaviour
 {
-    public enum Upgrades { upgrade1, upgrade2, upgrade3, upgrade4 }
+    public enum Upgrades { Colorful, Acuurancy, Coloring }
     public Upgrades upgrades;
     public int priseToBuy;
     public int upgradeLevel;
@@ -34,24 +34,29 @@ public class ButtonUpgrade : MonoBehaviour
 
     public void Upgrade()
     {
-        if (upgradeLevel < 5)
+        if (upgradeLevel < 6)
         {
             if (priseToBuy <= UpgraderManager.instance.totalPoint)
             {
                 UpgraderManager.instance.totalPoint -= priseToBuy;
                 upgradeLevel++;
                 UpdateLevel();
-                //switch (upgrades)
-                //{
-                //    case Upgrades.upgrade1:
-                //        break;
-                //    case Upgrades.upgrade2:
-                //        break;
-                //    case Upgrades.upgrade3:
-                //        break;
-                //    case Upgrades.upgrade4:
-                //        break;
-                //}
+
+                switch (upgrades)
+                {
+                    case Upgrades.Colorful:
+                        GameData.ColorfulLevel = upgradeLevel;
+                        Debug.Log(upgrades + " level: " + GameData.ColorfulLevel);
+                        break;
+                    case Upgrades.Acuurancy:
+                        GameData.AccuracyLevel = upgradeLevel;
+                        Debug.Log(upgrades + " level: " + GameData.AccuracyLevel);
+                        break;
+                    case Upgrades.Coloring:
+                        GameData.ColoringLevel = upgradeLevel;
+                        Debug.Log(upgrades + " level: " + GameData.ColoringLevel);
+                        break;
+                }
 
                 UpgraderManager.instance.CheckPoints();
                 SaveUpgrade();
@@ -70,7 +75,7 @@ public class ButtonUpgrade : MonoBehaviour
     }
     void UpdateLevel()
     {
-        if (upgradeLevel < 5)
+        if (upgradeLevel < 6)
         {
             level.text = "Level: " + upgradeLevel.ToString();
         }

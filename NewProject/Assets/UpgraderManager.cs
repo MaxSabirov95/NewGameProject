@@ -52,7 +52,7 @@ public class UpgraderManager : MonoBehaviour
     {
         foreach (ButtonUpgrade button in upgradesButtons)
         {
-            if (button.upgradeLevel < 5)
+            if (button.upgradeLevel < 6)
             {
                 if (button.priseToBuy > totalPoint)
                 {
