@@ -18,6 +18,7 @@ public class HealthPickUp : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Player"))
         {
+            //Debug.Log("A");
             isPicked = true;
             //collision.gameObject.GetComponentInChildren<HealthScript>().CheckIfPickedBucket();
             gameObject.SetActive(false);

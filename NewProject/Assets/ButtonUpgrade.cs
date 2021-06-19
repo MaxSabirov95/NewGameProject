@@ -47,6 +47,10 @@ public class ButtonUpgrade : MonoBehaviour
                     case Upgrades.Colorful:
                         GameData.ColorfulLevel = upgradeLevel;
                         Debug.Log(upgrades + " level: " + GameData.ColorfulLevel);
+
+                        /*float _duration = PlayerPrefs.GetFloat("Duration");
+                        _duration += 2f;
+                        PlayerPrefs.SetFloat("Duration", _duration);*/
                         break;
                     case Upgrades.Acuurancy:
                         GameData.AccuracyLevel = upgradeLevel;

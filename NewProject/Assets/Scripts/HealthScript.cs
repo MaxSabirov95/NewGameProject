@@ -5,22 +5,25 @@ using UnityEngine;
 public class HealthScript : MonoBehaviour
 {
     [SerializeField] PointsManager _pointsManager;
+    [SerializeField] SceneLoader _sceneLoader;
     [SerializeField] HealthPickUp _healthPickUp;
 
     private SpriteRenderer player;
-    private float duration = 15f;
+    [SerializeField] private float duration = 15f;
     private float t = 0;
 
     private void Start()
     {
-        player = GetComponentInChildren<SpriteRenderer>();
+        player = GameObject.Find("GFX_Hair").GetComponent<SpriteRenderer>();
         _pointsManager = FindObjectOfType<PointsManager>();
         _healthPickUp = FindObjectOfType<HealthPickUp>();
+        _sceneLoader = FindObjectOfType<SceneLoader>();
     }
 
     private void FixedUpdate()
     {
         CheckIfPickedBucket();
+        PlayerPrefs.SetFloat("Duration", duration);
     }
 
     IEnumerator ChangeColor()
@@ -37,6 +40,9 @@ public class HealthScript : MonoBehaviour
         if(player.color == Color.black)
         {
             _pointsManager.SaveHighestPoints();
+            _pointsManager.SavePoints();
+            _pointsManager.pointsIncreasing = false;
+            _sceneLoader.LoadScene("Losing Screen");
         }
     }
 
@@ -45,7 +51,7 @@ public class HealthScript : MonoBehaviour
         yield return null;
         player.color = Color.white;
         t = 0;
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         _healthPickUp.isPicked = false;
     }
 

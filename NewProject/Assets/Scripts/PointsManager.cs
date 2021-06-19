@@ -16,6 +16,7 @@ public class PointsManager : MonoBehaviour
     private void Start()
     {
         DeleteHighestPoints();
+        DeletePoints();
         pointsCounter = 0;
 
         if (PlayerPrefs.HasKey("Highest Points"))
@@ -56,6 +57,21 @@ public class PointsManager : MonoBehaviour
     public void DeleteHighestPoints()
     {
         PlayerPrefs.DeleteKey("Highest Points");
+    }
+
+    public void SavePoints()
+    {
+        PlayerPrefs.SetFloat("Points", pointsCounter);
+    }
+
+    public void LoadPoints()
+    {
+        pointsCounter = PlayerPrefs.GetFloat("Points");
+    }
+
+    public void DeletePoints()
+    {
+        PlayerPrefs.DeleteKey("Points");
     }
 
 }

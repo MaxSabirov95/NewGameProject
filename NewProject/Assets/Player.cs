@@ -46,6 +46,17 @@ public class Player : MonoBehaviour
     bool doGrounded;
     private bool canJump;
 
+    private Vector3 lastPosition;
+    private Vector3 lastVelocity;
+    private Vector3 lastAcceleration;
+
+    private void Awake()
+    {
+        Vector3 position = transform.position;
+        Vector3 velocity = Vector3.zero;
+        Vector3 acceleration = Vector3.zero;
+    }
+
     void Start()
     {
         doGrounded = true;
@@ -102,6 +113,25 @@ public class Player : MonoBehaviour
         IsGrounded();
 
         AddedGravity();
+
+        //Vector3 position = transform.position;
+        //Vector3 velocity = (position - lastPosition) / Time.deltaTime;
+        //Vector3 acceleration = (velocity - lastVelocity) / Time.deltaTime;
+        //if (Mathf.Abs(acceleration.magnitude - lastAcceleration.magnitude) < 0.01f)
+        //{
+        //    // Still
+        //}
+        //else if (acceleration.magnitude > lastAcceleration.magnitude)
+        //{
+        //    cam.fieldOfView = 110;
+        //}
+        //else
+        //{
+        //    // Decelerating
+        //}
+        //lastAcceleration = acceleration;
+        //lastVelocity = velocity;
+        //lastPosition = position;
     }
     public bool IsGrounded()
     {
