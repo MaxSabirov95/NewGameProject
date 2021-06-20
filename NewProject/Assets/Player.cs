@@ -46,17 +46,6 @@ public class Player : MonoBehaviour
     bool doGrounded;
     private bool canJump;
 
-    private Vector3 lastPosition;
-    private Vector3 lastVelocity;
-    private Vector3 lastAcceleration;
-
-    private void Awake()
-    {
-        Vector3 position = transform.position;
-        Vector3 velocity = Vector3.zero;
-        Vector3 acceleration = Vector3.zero;
-    }
-
     void Start()
     {
         doGrounded = true;
@@ -88,50 +77,36 @@ public class Player : MonoBehaviour
     {
         canJump = false;
         isJumping = true;
-        rb.AddRelativeForce(Vector3.up * jumpForce, ForceMode2D.Impulse);
+        rb.AddRelativeForce(Vector3.up * jumpForce * (Mathf.Sqrt(rb.velocity.magnitude)), ForceMode2D.Impulse);
         doJump = false;
         _jumpTimer = 0;
     }
 
     private void FixedUpdate()
     {
-        inputVector.x = Time.fixedDeltaTime;
+        inputVector.x = Time.fixedDeltaTime * currentSpeed;
 
-        inputVector *= currentSpeed;
+        //inputVector *= currentSpeed;
         
         
-        rb.AddRelativeForce(inputVector, ForceMode2D.Impulse);
+        rb.AddRelativeForce(inputVector);
 
-        if(isJumpHeld)
+        if (isJumpHeld)
         {
-            rb.AddRelativeForce(Vector2.up * jumpForce/2f);
+            rb.AddRelativeForce(Vector2.up * jumpForce / 2f);
 
         }
+        
+            
+
 
         // cam.fieldOfView = 60+ rb.velocity.magnitude*fovSpeed*Time.fixedDeltaTime;
         //if (doGrounded)
-        IsGrounded();
+        if (!IsGrounded())
+        {
+            AddedGravity();
+        }
 
-        AddedGravity();
-
-        //Vector3 position = transform.position;
-        //Vector3 velocity = (position - lastPosition) / Time.deltaTime;
-        //Vector3 acceleration = (velocity - lastVelocity) / Time.deltaTime;
-        //if (Mathf.Abs(acceleration.magnitude - lastAcceleration.magnitude) < 0.01f)
-        //{
-        //    // Still
-        //}
-        //else if (acceleration.magnitude > lastAcceleration.magnitude)
-        //{
-        //    cam.fieldOfView = 110;
-        //}
-        //else
-        //{
-        //    // Decelerating
-        //}
-        //lastAcceleration = acceleration;
-        //lastVelocity = velocity;
-        //lastPosition = position;
     }
     public bool IsGrounded()
     {
