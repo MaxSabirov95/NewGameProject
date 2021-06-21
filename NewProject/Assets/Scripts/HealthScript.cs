@@ -4,69 +4,89 @@ using UnityEngine;
 
 public class HealthScript : MonoBehaviour
 {
+    public List<HealthPickUp> flowers = new List<HealthPickUp>();
+
     [SerializeField] PointsManager _pointsManager;
     [SerializeField] SceneLoader _sceneLoader;
-    [SerializeField] HealthPickUp _healthPickUp;
+    //[SerializeField] HealthPickUp _healthPickUp;
 
     private SpriteRenderer player;
     [SerializeField] private float duration = 15f;
+    //[SerializeField] private float _time = 10f;
     private float t = 0;
+
+    //private float currentHP = 0f;
+    //private float maxHP = 100f;
+
+    //private float healthPrecentage;
+    //private float minusHealthPerDistance = 1f;
 
     private void Start()
     {
         player = GameObject.Find("GFX_Hair").GetComponent<SpriteRenderer>();
         _pointsManager = FindObjectOfType<PointsManager>();
-        _healthPickUp = FindObjectOfType<HealthPickUp>();
+        //_healthPickUp = FindObjectOfType<HealthPickUp>();
         _sceneLoader = FindObjectOfType<SceneLoader>();
+        //currentHP = maxHP;
+        //healthPrecentage = currentHP / maxHP;
     }
 
     private void FixedUpdate()
     {
-        CheckIfPickedBucket();
+        CheckIfPickedFlower();
         PlayerPrefs.SetFloat("Duration", duration);
     }
 
     IEnumerator ChangeColor()
     {
         yield return new WaitForSeconds(1f);
-
+        //healthPrecentage = currentHP / maxHP;
+        //currentHP -= minusHealthPerDistance;
+        //Debug.Log(currentHP);
         player.color = Color.Lerp(Color.white, Color.black, t);
 
-        if(t<1)
+        if (t < 1)
         {
             t += Time.fixedDeltaTime / duration;
         }
 
-        if(player.color == Color.black)
+        if (player.color == Color.black)
         {
             _pointsManager.SaveHighestPoints();
             _pointsManager.SavePoints();
             _pointsManager.pointsIncreasing = false;
-            _sceneLoader.LoadScene("Losing Screen");
+            //_sceneLoader.LoadScene("Losing Screen");
         }
     }
 
     IEnumerator AddColor()
     {
-        yield return null;
-        player.color = Color.white;
-        t = 0;
-        yield return new WaitForSeconds(1f);
-        _healthPickUp.isPicked = false;
+        foreach (HealthPickUp flower in flowers)
+        {
+            yield return null;
+            player.color = Color.white;
+            //_time = 10f;
+            t = 0;
+            yield return new WaitForSeconds(1f);
+            flower.isPicked = false;
+        }
     }
 
 
-    public void CheckIfPickedBucket()
+    public void CheckIfPickedFlower()
     {
-        if (!_healthPickUp.isPicked)
+        foreach (HealthPickUp flower in flowers)
         {
-            StartCoroutine(ChangeColor());
-        }
+            if (!flower.isPicked)
+            {
+                StartCoroutine(ChangeColor());
+            }
 
-        else
-        {
-            StopCoroutine(ChangeColor());
-            StartCoroutine(AddColor());
+            else
+            {
+                StopCoroutine(ChangeColor());
+                StartCoroutine(AddColor());
+            }
         }
     }
 }
