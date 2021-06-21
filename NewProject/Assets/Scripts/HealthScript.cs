@@ -55,7 +55,7 @@ public class HealthScript : MonoBehaviour
             _pointsManager.SaveHighestPoints();
             _pointsManager.SavePoints();
             _pointsManager.pointsIncreasing = false;
-            //_sceneLoader.LoadScene("Losing Screen");
+            _sceneLoader.LoadScene("Death Screen");
         }
     }
 
