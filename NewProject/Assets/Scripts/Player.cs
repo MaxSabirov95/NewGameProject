@@ -249,7 +249,8 @@ public class Player : MonoBehaviour
     {
         float start = cam.transform.localPosition.z;
         float t = 0f;
-
+        float ogMinCamZ = minCamZ;
+        if(minCamZ > fov)
         minCamZ = fov;
 
         while(t != time)
@@ -259,5 +260,6 @@ public class Player : MonoBehaviour
             t += Time.deltaTime;
             yield return null;
         }
+        minCamZ = ogMinCamZ;
     }
 }
