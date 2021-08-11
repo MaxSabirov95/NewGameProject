@@ -30,6 +30,8 @@ public class Player : MonoBehaviour
     float jumpTime;
      [SerializeField]
     LayerMask layerMask;
+    [SerializeField]
+    LayerMask layerMask2;
 
 
     [SerializeField]
@@ -57,6 +59,8 @@ public class Player : MonoBehaviour
     public Queue<float> lastMagnitudes;
     [SerializeField]
     private float minDelta;
+    public float minCamZ;
+    public float maxCamZ;
 
     void Start()
     {
@@ -143,7 +147,7 @@ public class Player : MonoBehaviour
         //inputVector.y = Input.GetAxisRaw("Vertical");
         InterruptCheck();
         Vector3 newCamPos = cam.transform.localPosition + (Vector3.forward * -.01f * rb.velocity.magnitude * Time.deltaTime) + (Vector3.forward * Time.deltaTime * .1f);
-        newCamPos.z = Mathf.Clamp(newCamPos.z, -150f, -51.3f); //min max cam z
+        newCamPos.z = Mathf.Clamp(newCamPos.z, minCamZ, maxCamZ); //min max cam z
         cam.transform.localPosition = newCamPos;
 
         if (Input.GetButtonDown("Jump") && canJump)
@@ -164,9 +168,15 @@ public class Player : MonoBehaviour
         GetComponent<Animator>().SetTrigger("Jump");
         canJump = false;
         isJumping = true;
-        rb.AddRelativeForce(Vector3.up * jumpForce * (Mathf.Sqrt(rb.velocity.magnitude)), ForceMode2D.Impulse);
+        rb.AddRelativeForce(Vector3.up * jumpForce, ForceMode2D.Impulse);
         doJump = false;
         _jumpTimer = 0;
+
+        RaycastHit2D hit = Physics2D.BoxCast(groundChecker.position, Vector2.one*transform.localScale.y/2, 0, Vector2.down, 1f, layerMask2);
+        if(hit)
+        {
+            hit.collider.GetComponent<BW_Tile>().ColorMe();
+        }
     }
 
     private void FixedUpdate()
@@ -203,7 +213,7 @@ public class Player : MonoBehaviour
     }
     public bool IsGrounded()
     {
-        bool toReturn = Physics2D.BoxCast(groundChecker.position, Vector2.one/2f, 0, Vector2.down, 1f, layerMask);
+        bool toReturn = Physics2D.BoxCast(groundChecker.position, Vector2.one * 8, 0, Vector2.down, 1f, layerMask);
         isJumping = !toReturn;
         isGrounded = canJump = toReturn;
         return toReturn;
@@ -227,5 +237,26 @@ public class Player : MonoBehaviour
     void AddedGravity()
     {
         rb.AddRelativeForce(Physics2D.gravity * currentGravMod);
+    }
+
+    public void CallCamToFOV(float fov, float time)
+    {
+        StartCoroutine(CamToFOV(fov, time));
+    }
+
+    IEnumerator CamToFOV(float fov, float time)
+    {
+        float start = cam.transform.localPosition.z;
+        float t = 0f;
+
+        minCamZ = fov;
+
+        while(t != time)
+        {
+            float newZ = Mathf.Lerp(start, fov,t/time);
+            cam.transform.localPosition = new Vector3(cam.transform.localPosition.x, cam.transform.localPosition.y, newZ);
+            t += Time.deltaTime;
+            yield return null;
+        }
     }
 }
