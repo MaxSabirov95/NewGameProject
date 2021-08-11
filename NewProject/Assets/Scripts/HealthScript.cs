@@ -50,13 +50,13 @@ public class HealthScript : MonoBehaviour
             t += Time.fixedDeltaTime / duration;
         }
 
-        if (player.color == Color.black)
-        {
-            _pointsManager.SaveHighestPoints();
-            _pointsManager.SavePoints();
-            _pointsManager.pointsIncreasing = false;
-            _sceneLoader.LoadScene("Death Screen");
-        }
+        //if (player.color == Color.black) //should compare t maybe? int is better
+        //{
+        //    //_pointsManager.SaveHighestPoints();
+        //    _pointsManager.SavePoints();
+        //    _pointsManager.pointsIncreasing = false;
+        //    _sceneLoader.LoadScene("Death Screen");
+        //}
     }
 
     IEnumerator AddColor()

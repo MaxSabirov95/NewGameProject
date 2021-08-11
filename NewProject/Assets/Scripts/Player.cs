@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Player : MonoBehaviour
 {
@@ -19,6 +20,10 @@ public class Player : MonoBehaviour
     float maxGravMod;
     [SerializeField]
     float minGravMod;
+    [SerializeField]
+    float maxSpeed; //max value of currentSpeed
+    [SerializeField]
+    float minSpeed; //min value of currentSpeed
     [SerializeField]
     float addedGravSpeed;
      [SerializeField]
@@ -45,20 +50,101 @@ public class Player : MonoBehaviour
     bool isJumping;
     bool doGrounded;
     private bool canJump;
+    private bool isInterrupted;
+    [SerializeField]
+    private float speedRiseMod;
+
+    public Queue<float> lastMagnitudes;
+    [SerializeField]
+    private float minDelta;
 
     void Start()
     {
+        lastMagnitudes = new Queue<float>(5);
+        
+        isInterrupted = false;
         doGrounded = true;
         canJump = false;
         isJumping = false;
 
         rb = GetComponent<Rigidbody2D>();
+        StartCoroutine(GainSpeed());
+    }
+    public void Interrupt()
+    {
+        isInterrupted = true;
+    }
+
+    void InterruptCheck()
+    {
+        lastMagnitudes.Enqueue(rb.velocity.magnitude);
+        if (lastMagnitudes.Count >= 5)
+            lastMagnitudes.Dequeue();
+        if (lastMagnitudes.Count > 2)
+        {
+            var lowestValue = lastMagnitudes.Where(x => x == lastMagnitudes.Min()).First();
+            var highestValue = lastMagnitudes.Where(x => x == lastMagnitudes.Max()).First();
+            var highOrLowValue = lastMagnitudes.Where(x => x == lastMagnitudes.Max() || x== lastMagnitudes.Min()).First();
+
+        //float max = lastMagnitude.Max();
+        //float min = lastMagnitude.Min(x => x);
+
+        Debug.Log(highOrLowValue);
+        if(highOrLowValue == highestValue)
+            {
+                //Debug.Log("high, with delta of: " + (highestValue - lowestValue));
+                if ((highestValue - lowestValue) > minDelta)
+                {
+                    Interrupt();
+                    Debug.LogWarning("Interrupted");
+                }
+            }
+        
+        }
+        //foreach (var mag in lastMagnitude)
+        //{
+            
+        //}
+    }
+    IEnumerator GainSpeed()
+    {
+        float currentCooldown = 0;
+        while (true)
+        {
+            if (isInterrupted && currentCooldown < 1)
+            {
+                currentSpeed = minSpeed;
+                currentCooldown += Time.deltaTime;
+
+                continue;
+            }
+            currentCooldown = 0; //zeros after first time not continuing (and every time when not interrupted);
+            isInterrupted = false;
+
+            currentSpeed += Time.fixedDeltaTime * speedRiseMod;
+            currentSpeed = Mathf.Clamp(currentSpeed, minSpeed, maxSpeed);
+
+            yield return new WaitForFixedUpdate();
+        }
+    }
+    IEnumerator GainSpeedCooldown()
+    {
+        while (isInterrupted)
+        {
+            
+
+            yield return new WaitForFixedUpdate();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         //inputVector.y = Input.GetAxisRaw("Vertical");
+        InterruptCheck();
+        Vector3 newCamPos = cam.transform.localPosition + (Vector3.forward * -.01f * rb.velocity.magnitude * Time.deltaTime) + (Vector3.forward * Time.deltaTime * .1f);
+        newCamPos.z = Mathf.Clamp(newCamPos.z, -150f, -51.3f); //min max cam z
+        cam.transform.localPosition = newCamPos;
 
         if (Input.GetButtonDown("Jump") && canJump)
         {
@@ -75,6 +161,7 @@ public class Player : MonoBehaviour
     }
     void Jump()
     {
+        GetComponent<Animator>().SetTrigger("Jump");
         canJump = false;
         isJumping = true;
         rb.AddRelativeForce(Vector3.up * jumpForce * (Mathf.Sqrt(rb.velocity.magnitude)), ForceMode2D.Impulse);
@@ -84,6 +171,8 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+
+
         inputVector.x = Time.fixedDeltaTime * currentSpeed;
 
         //inputVector *= currentSpeed;
@@ -105,6 +194,10 @@ public class Player : MonoBehaviour
         if (!IsGrounded())
         {
             AddedGravity();
+        }
+        else
+        {
+            GetComponent<Animator>().SetBool("Falling", false);
         }
 
     }

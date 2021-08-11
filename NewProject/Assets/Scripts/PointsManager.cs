@@ -44,10 +44,10 @@ public class PointsManager : MonoBehaviour
         //Need to add: stop increasing points when dying.
     }
 
-    public void SaveHighestPoints()
-    {
-        PlayerPrefs.SetFloat("Highest Points", highestPointsCounter);
-    }
+    //public void SaveHighestPoints()
+    //{
+    //    PlayerPrefs.SetFloat("Highest Points", highestPointsCounter);
+    //}
 
     public void LoadHighestPoints()
     {
