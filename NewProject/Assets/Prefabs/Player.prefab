@@ -65,6 +65,9 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 256
+  layerMask2:
+    serializedVersion: 2
+    m_Bits: 0
   groundChecker: {fileID: 863594990484870230}
   cam: {fileID: 863594989362166186}
   isJumpHeld: 0
@@ -72,6 +75,8 @@ MonoBehaviour:
   isJumping: 0
   speedRiseMod: 6
   minDelta: 100
+  minCamZ: 0
+  maxCamZ: 0
 --- !u!114 &863594988487581994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -535,7 +540,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 863594990484870231}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.76, z: 0}
+  m_LocalPosition: {x: 0.92, y: -1.76, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 863594988487581993}
