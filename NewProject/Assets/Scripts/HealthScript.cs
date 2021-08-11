@@ -10,7 +10,7 @@ public class HealthScript : MonoBehaviour
     [SerializeField] SceneLoader _sceneLoader;
     //[SerializeField] HealthPickUp _healthPickUp;
 
-    private SpriteRenderer player;
+    public SpriteRenderer player;
     [SerializeField] private float duration = 15f;
     //[SerializeField] private float _time = 10f;
     private float t = 0;
