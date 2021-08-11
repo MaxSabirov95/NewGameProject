@@ -215,6 +215,7 @@ public class Player : MonoBehaviour
     {
         bool toReturn = Physics2D.BoxCast(groundChecker.position, Vector2.one * 8, 0, Vector2.down, 1f, layerMask);
         isJumping = !toReturn;
+        GetComponent<Animator>().SetBool("Falling", !toReturn);
         isGrounded = canJump = toReturn;
         return toReturn;
     }
